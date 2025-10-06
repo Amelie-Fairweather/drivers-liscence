@@ -27,8 +27,13 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install CMake (required for dlib compilation)
-RUN apt-get update && apt-get install -y cmake && rm -rf /var/lib/apt/lists/*
+# Install build tools required for dlib compilation
+RUN apt-get update && apt-get install -y \
+    cmake \
+    build-essential \
+    g++ \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
 COPY requirements.txt .
