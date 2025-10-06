@@ -1,0 +1,6 @@
+flask
+pillow
+pytesseract
+flask-cors
+face-recognition
+numpy
