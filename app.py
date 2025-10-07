@@ -15,7 +15,15 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, origins=[
+    "https://rider-next.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://*.vercel.app"
+], 
+supports_credentials=True,
+allow_headers=['Content-Type', 'Authorization'],
+methods=['GET', 'POST', 'OPTIONS'])  # Enable CORS for all routes
 
 # Optional: restrict allowed file types
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
