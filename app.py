@@ -10,8 +10,15 @@ import re
 import face_recognition
 import numpy as np
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
+# Set up logging for production
+import sys
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -19,11 +26,13 @@ CORS(app, origins=[
     "https://rider-next.vercel.app",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://*.vercel.app"
+    "https://*.vercel.app",
+    "https://*.railway.app",
+    "*"  # Allow all origins for now (you can restrict this later)
 ], 
 supports_credentials=True,
-allow_headers=['Content-Type', 'Authorization'],
-methods=['GET', 'POST', 'OPTIONS'])  # Enable CORS for all routes
+allow_headers=['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+methods=['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'])  # Enable CORS for all routes
 
 # Optional: restrict allowed file types
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -394,6 +403,22 @@ def ocr():
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({'status': 'healthy', 'message': 'Driver license verification API is running'})
+
+@app.route('/', methods=['GET'])
+def home():
+    """Root endpoint"""
+    return jsonify({
+        'message': 'Driver License Verification API',
+        'endpoints': {
+            'health': '/health',
+            'ocr': '/ocr'
+        }
+    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=False, port=5001)

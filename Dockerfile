@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies required for face_recognition and OpenCV
+# Install system dependencies required for face_recognition, OpenCV, and Tesseract
 RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     libsm6 \
@@ -25,6 +25,8 @@ RUN apt-get update && apt-get install -y \
     libopenblas-dev \
     gfortran \
     wget \
+    tesseract-ocr \
+    tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
 # Install build tools required for dlib compilation
